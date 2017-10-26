@@ -21,6 +21,7 @@ var ufo_Yspeed = 3;
 var game_period = 0;
 var use_crossair = false;
 var ufo_spawned = false;
+var show_instructions = true;
 
 function rect(color, x, y, width, height) {
     this.color = color;
@@ -159,6 +160,7 @@ function playerMove(e) {
 
 function startGame() {
     if (!start) {
+		player.y = game.y + game.height / 2 - player.height / 2;
 		for (var i = 0; i < 3; i++)
 		{
 		var temporary_point = new ImageRect('images/playerLife.png', game.x + 5 + 35 * i, game.y + 5, 33, 26)
@@ -190,13 +192,14 @@ function draw() {
 	if (use_crossair) crossair.draw();
 	
     if (!start) {
+		if (show_instructions) Game_Instructions.draw();
         context.fillStyle = '#ccc';
-        context.fillText("Click to start", game.width / 2, game.height / 2 - 50);
+        context.fillText("Click to start", game.width / 2 + 50, game.height / 2 - 70);
         context.font = '16px Courier';
         context.textBaseline = 'top';
 		context.textBaseline = 'bottom';
         context.fillStyle = '#ccc';
-        context.fillText("By A.Kozyrev FPM KM-62", game.width / 2 - 30, game.height / 2 - 30);
+        context.fillText("By A.Kozyrev FPM KM-62", game.width / 2 + 20, game.height);
 		context.font = '16px Courier';
 		context.textBaseline = 'bottom';
 		shootBullet = false;
@@ -255,9 +258,13 @@ function spawnUFO() {
 }
 
 function update() {
-    context.fillStyle = '#ccc';
-    context.fillText("Score:" + game.score + "  Maximum score:" + game.maxscore, 5, game.height);
-    context.font = '16px Courier';
+	
+	if (start)
+	{
+		context.fillStyle = '#ccc';
+		context.fillText("Score:" + game.score + "  Maximum score:" + game.maxscore, 5, game.height);
+		context.font = '16px Courier';
+	}
 	
 	if (start && !(ufo_spawned)) {
 		if (MeteorSpawnerTicker > meteorcooldown)
@@ -396,6 +403,7 @@ function update() {
 		game_period = 0;
 		ufo_spawned = false;
 		enemy_ufo.x = game.x + game.width;
+		player.y = game.y + game.height / 2 - player.height / 2;
 		start = false;
 	}
 }
@@ -413,10 +421,11 @@ function init() {
 	game.maxscore = 0;
 	
 	var players_offset_x = 50;
-	var players_offset_y = 50;
+	var players_offset_y = game.height / 2;
 	
 	BGround = new ImageObject('images/darkPurple.png', 0, 0, 480, 320);
-	Frame = new ImageObject('images/darkPurple.png', 0, 0, 480, 320);
+	//Frame = new ImageObject('images/darkPurple.png', 0, 0, 480, 320);
+	Game_Instructions = new ImageObject('images/instructions.png', game.width / 2 + 70, game.height / 2 - 40, 132, 158); 
 	player = new ImageRect('images/player.png', game.x + players_offset_x, game.y + players_offset_y, 50, 75);
 	crossair = new ImageRect('images/crossair.png', 0, 0, 36, 36);
 	enemy_ufo = new ImageRect('images/ufoRed.png', game.x + game.width, game.y + game.height, 70, 70);
